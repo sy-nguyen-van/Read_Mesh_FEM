@@ -57,25 +57,24 @@ def save_to_csv(nodes, elements, Name_Sub_Model):
     element_file = Name_Sub_Model + '_Elements.csv'
     # Convert nodes to DataFrame
     node_data = {
-        'Node_ID': list(nodes.keys()),
         'X': [coords[0] for coords in nodes.values()],
         'Y': [coords[1] for coords in nodes.values()],
         'Z': [coords[2] if len(coords) > 2 else 0.0 for coords in nodes.values()]  # Default Z to 0 if 2D
     }
     node_df = pd.DataFrame(node_data)
-    node_df.to_csv(node_file, index=False)
+    node_df.to_csv(node_file, index=False, header=False)
     print(f"Saved nodes to {node_file}")
 
     # Convert elements to DataFrame
     max_nodes = max(len(conn) for conn in elements.values())  # Find max number of nodes per element
-    element_data = {'Element_ID': list(elements.keys())}
+    element_data = {}
     for i in range(max_nodes):
         element_data[f'Node_{i+1}'] = [conn[i] if i < len(conn) else None for conn in elements.values()]
     element_df = pd.DataFrame(element_data)
-    element_df.to_csv(element_file, index=False)
+    element_df.to_csv(element_file, index=False, header=False)
     print(f"Saved elements to {element_file}")
 # ====================== Data-Preparation ==============================
-Name_Sub_Model = 'L_bracket_45_45_15_3'
+Name_Sub_Model = 'Lbracket_3D_Size_1_5'
 file_name = Name_Sub_Model + '.inp'
 nodes, elements = read_inp_mesh(file_name)
 save_to_csv(nodes, elements, Name_Sub_Model)
