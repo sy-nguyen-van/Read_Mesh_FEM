@@ -46,7 +46,11 @@ function read_inp_mesh(file_path::String)
                 instname = m2 === nothing ? "" : m2.captures[1]
                 current_set_key = instname == "" ? setname : "$(setname)"
                 node_sets[current_set_key] = Int[]
-                current_section = :nset
+                if occursin(r"(?i)generate", line)
+                    current_section = :nset_generate
+                else
+                    current_section = :nset
+                end
                 continue
 
             elseif startswith(uppercase(line), "*ELSET")
@@ -95,7 +99,14 @@ function read_inp_mesh(file_path::String)
                         push!(node_sets[current_set_key], parse(Int, p))
                     end
                 end
-
+            elseif current_section == :nset_generate && current_set_key !== nothing
+                parts = split(line, ',')
+                if length(parts) >= 3
+                    start_val = parse(Int, strip(parts[1]))
+                    end_val   = parse(Int, strip(parts[2]))
+                    step_val  = parse(Int, strip(parts[3]))
+                    append!(node_sets[current_set_key], start_val:step_val:end_val)
+                end
             elseif current_section == :elset && current_set_key !== nothing
                 parts = split(line, ',')
                 for p in parts
