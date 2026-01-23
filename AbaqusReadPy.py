@@ -74,7 +74,7 @@ def save_to_csv(nodes, elements, Name_Sub_Model):
     element_df.to_csv(element_file, index=False, header=False)
     print(f"Saved elements to {element_file}")
 # ====================== Data-Preparation ==============================
-Name_Sub_Model = 'Lbracket_3D_Size_1_5'
+Name_Sub_Model = 'Mesh_Files/Vframe3d_Size_2_0'
 file_name = Name_Sub_Model + '.inp'
 nodes, elements = read_inp_mesh(file_name)
 save_to_csv(nodes, elements, Name_Sub_Model)
